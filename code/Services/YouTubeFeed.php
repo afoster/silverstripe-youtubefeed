@@ -185,20 +185,26 @@ class YouTubeFeed extends Controller
                     // uploaded to the channel, and then call the playlistItems.list method
                     // to retrieve that list.
                     $uploadsListId = $channel['contentDetails']['relatedPlaylists']['uploads'];
-                    $playlistItemsResponse = $this->service->playlistItems->listPlaylistItems('snippet', array(
-                        'playlistId' => $uploadsListId,
-                        'maxResults' => $limit_per_page
-                    ));
 
-                    var_dump($playlistItemsResponse);
-                    exit;
+                    $page = 0;
+                    $nextPageToken = null;
 
-                    // foreach ($playlistItemsResponse['items'] as $playlistItem) {
-                    //     $videoObject = $this->processVideo($playlistItem);
-                    // }
+                    while ($page === 0 || $nextPageToken) {
+                        $page++;
+                        echo "GOT ANOTHER PAGE with token $nextPageToken (page $page)";
 
-                    // if (sizeof($playlistItemsResponse['items']) >= $limit_per_page) {
-                    // }
+                        $playlistItemsResponse = $this->service->playlistItems->listPlaylistItems('snippet', array(
+                            'playlistId' => $uploadsListId,
+                            'maxResults' => $limit_per_page,
+                            'nextPageToken' => $nextPageToken
+                        ));
+                        $nextPageToken = $playlistItemsResponse->nextPageToken;
+        
+                        foreach ($playlistItemsResponse['items'] as $playlistItem) {
+                            echo "!";
+                            $videoObject = $this->processVideo($playlistItem);
+                        }
+                    }
                 }
             } catch (Google_Service_Exception $e) {
                 error_log(sprintf('<p>A service error occurred: <code>%s</code></p>',
@@ -352,7 +358,6 @@ class YouTubeFeed extends Controller
 
         $siteConfig = SiteConfig::current_site_config();
 
-        echo "DO IT";
         $this->getAllUploads();
         
         // Save the time the update was performed
