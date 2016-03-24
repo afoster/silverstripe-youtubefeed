@@ -191,7 +191,6 @@ class YouTubeFeed extends Controller
 
                     while ($page === 0 || $nextPageToken) {
                         $page++;
-                        echo "GOT ANOTHER PAGE with token $nextPageToken (page $page)";
 
                         $playlistItemsResponse = $this->service->playlistItems->listPlaylistItems('snippet', array(
                             'playlistId' => $uploadsListId,
@@ -201,7 +200,6 @@ class YouTubeFeed extends Controller
                         $nextPageToken = $playlistItemsResponse->nextPageToken;
         
                         foreach ($playlistItemsResponse['items'] as $playlistItem) {
-                            echo "!";
                             $videoObject = $this->processVideo($playlistItem);
                         }
                     }
@@ -224,7 +222,6 @@ class YouTubeFeed extends Controller
         
         return false;
     }
-
 
     /**
      * Saves a Google_Service_YouTube_PlaylistItem into YouTubeVideo
