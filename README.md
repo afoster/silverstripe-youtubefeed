@@ -6,6 +6,7 @@ Requests videos from an authenticated YouTube 'My Uploads' feed and converts the
 
 - Configurable auto-update interval (disabled by default)
 - CLI task YouTubeFeedTask `framework/sake YouTubeFeedTask flush=all`
+- CLI task YouTubeFeedBulkImportTask `framework/sake dev/tasks/YouTubeFeedBulkImportTask` (FIXME don't require definition of a local `BuildTask`)
 - Stores video information into YouTubeVideo DataObject.
 
 ## Installation
