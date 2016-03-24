@@ -196,7 +196,7 @@ class YouTubeFeed extends Controller
                         $playlistItemsResponse = $this->service->playlistItems->listPlaylistItems('snippet', array(
                             'playlistId' => $uploadsListId,
                             'maxResults' => $limit_per_page,
-                            'nextPageToken' => $nextPageToken
+                            'pageToken' => $nextPageToken
                         ));
                         $nextPageToken = $playlistItemsResponse->nextPageToken;
         
