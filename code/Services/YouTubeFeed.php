@@ -166,6 +166,56 @@ class YouTubeFeed extends Controller
         return false;
     }
 
+    /**
+     * Checks the connected YouTube account for video uploads, and calls processVideo() on each one.
+     *
+     * @return boolean False on failure, true otherwise
+     */
+    public function getAllUploads($limit_per_page = 50)
+    {
+        if ($this->getIsAuthenticated()) {
+            try {
+                // Call the channels.list method to retrieve information about the
+                // currently authenticated user's channel.
+                $channelsResponse = $this->service->channels->listChannels('contentDetails', array(
+                    'mine' => 'true',
+                ));
+                foreach ($channelsResponse['items'] as $channel) {
+                    // Extract the unique playlist ID that identifies the list of videos
+                    // uploaded to the channel, and then call the playlistItems.list method
+                    // to retrieve that list.
+                    $uploadsListId = $channel['contentDetails']['relatedPlaylists']['uploads'];
+                    $playlistItemsResponse = $this->service->playlistItems->listPlaylistItems('snippet', array(
+                        'playlistId' => $uploadsListId,
+                        'maxResults' => $limit_per_page
+                    ));
+
+                    var_dump($playlistItemsResponse);
+
+                    // foreach ($playlistItemsResponse['items'] as $playlistItem) {
+                    //     $videoObject = $this->processVideo($playlistItem);
+                    // }
+
+                    // if (sizeof($playlistItemsResponse['items']) >= $limit_per_page) {
+                    // }
+                }
+            } catch (Google_Service_Exception $e) {
+                error_log(sprintf('<p>A service error occurred: <code>%s</code></p>',
+                    htmlspecialchars($e->getMessage())));
+            } catch (Google_Exception $e) {
+                error_log(sprintf('<p>An client error occurred: <code>%s</code></p>',
+                    htmlspecialchars($e->getMessage())));
+            }
+
+            $token = $this->client->getAccessToken();
+            $this->setConfigToken($token);
+
+            return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * Saves a Google_Service_YouTube_PlaylistItem into YouTubeVideo
@@ -299,8 +349,8 @@ class YouTubeFeed extends Controller
 
         $siteConfig = SiteConfig::current_site_config();
 
-        // $this->getRecentUploads();
         echo "DO IT";
+        $this->getAllUploads();
         
         // Save the time the update was performed
         $siteConfig->YouTubeFeed_LastSaved = SS_Datetime::now()->value;
