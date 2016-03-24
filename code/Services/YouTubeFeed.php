@@ -287,4 +287,23 @@ class YouTubeFeed extends Controller
             }
         }
     }
+
+    /**
+     * Import all available YouTube videos, using API pagination. Use this as a once-off if you have more than 50 videos.
+     *
+     * @throws ValidationException
+     * @throws null
+     */
+    public function importAll($force = false)
+    {
+
+        $siteConfig = SiteConfig::current_site_config();
+
+        // $this->getRecentUploads();
+        echo "DO IT";
+        
+        // Save the time the update was performed
+        $siteConfig->YouTubeFeed_LastSaved = SS_Datetime::now()->value;
+        $siteConfig->write();
+    }
 }
