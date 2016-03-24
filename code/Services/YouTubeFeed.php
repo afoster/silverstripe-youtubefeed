@@ -191,6 +191,7 @@ class YouTubeFeed extends Controller
                     ));
 
                     var_dump($playlistItemsResponse);
+                    exit;
 
                     // foreach ($playlistItemsResponse['items'] as $playlistItem) {
                     //     $videoObject = $this->processVideo($playlistItem);
@@ -213,6 +214,8 @@ class YouTubeFeed extends Controller
             return true;
         }
 
+        echo "Not authenticated.";
+        
         return false;
     }
 
